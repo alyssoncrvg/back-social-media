@@ -30,7 +30,7 @@ const posts = new Schema({
   mensage: { type: String, require: true },
   date: { type: Date, require: true },
   user: { type: Schema.Types.ObjectId, ref: 'Usuarios' },
-  likes: { type: Number, require:true }
+  likes: { type: Number, require: true }
 })
 
 

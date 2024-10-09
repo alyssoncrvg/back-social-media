@@ -7,8 +7,8 @@ export const usuarioPostRouter = Router().post('/users', async (req: Request, re
     try {
 
         const date = new Date();
-        const followers: Array<string> = []; 
-        const following: Array<string> = [];  
+        const followers: Array<string> = [];
+        const following: Array<string> = [];
         const numberFollowers = 0
         const numberFollowing = 0
         const posts: Array<string> = [];
@@ -32,9 +32,9 @@ export const usuarioPostRouter = Router().post('/users', async (req: Request, re
             res.status(400).json({
                 message: `O nome de usuário '${error.keyValue.user}' já está em uso. Por favor, escolha outro.`
             });
-        } else{
-            res.status(404).json({
-                message: 'Rota não encontrada'
+        } else {
+            res.status(500).json({
+                message: 'Erro ao tentar criar usuário'
             })
         }
     }
