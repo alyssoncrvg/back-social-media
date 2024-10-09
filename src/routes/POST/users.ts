@@ -7,15 +7,21 @@ export const usuarioPostRouter = Router().post('/users', async (req: Request, re
     try {
 
         const date = new Date();
-        const followers = 0
-        const following = 0
+        const followers: Array<string> = []; 
+        const following: Array<string> = [];  
+        const numberFollowers = 0
+        const numberFollowing = 0
+        const posts: Array<string> = [];
 
         const registerUser = new Usuario({
             user,
             name,
             date,
             followers,
-            following
+            following,
+            numberFollowers,
+            numberFollowing,
+            posts
         })
 
         const saveUser = await registerUser.save()
