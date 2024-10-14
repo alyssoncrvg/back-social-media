@@ -6,12 +6,12 @@ export const postsRouterPatch = Router().patch('/post/:id', async (req: Request,
     const { mensage } = req.body
 
     try {
-
-        if (mensage != '') {
+        const mensageConfirm = mensage.trimStart();
+        if (mensageConfirm != '') {
 
             const postUpdate = await Posts.findByIdAndUpdate(
                 id,
-                { mensage: mensage },
+                { mensage: mensageConfirm },
                 { new: true, runValidators: true }
             )
 

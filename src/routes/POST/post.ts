@@ -5,24 +5,34 @@ export const postsRouterPost = Router().post('/post', async (req: Request, res: 
     const { mensage, user } = req.body;
     try {
 
-        const existingUser = await Usuario.findById(user);
-        if (existingUser) {
+        const trimmedMessage = mensage.trimStart();
 
-            const date = new Date()
-            const likes = 0
+        const hasLetterOrNumber = /.+/.test(trimmedMessage);
 
-            const post = new Posts({
-                mensage,
-                date,
-                user,
-                likes
+        if (hasLetterOrNumber) {
+            const existingUser = await Usuario.findById(user);
+            if (existingUser) {
+
+                const date = new Date()
+                const likes = 0
+
+                const post = new Posts({
+                    mensage: trimmedMessage,
+                    date,
+                    user,
+                    likes
+                })
+
+                const postSave = await post.save()
+
+                await Usuario.findByIdAndUpdate(user, { $push: { posts: postSave._id } });
+
+                res.status(201).json(postSave)
+            }
+        } else {
+            res.status(400).json({
+                mensage: 'Não há conteúdo no post'
             })
-
-            const postSave = await post.save()
-
-            await Usuario.findByIdAndUpdate(user, { $push: { posts: postSave._id } });
-
-            res.status(201).json(postSave)
         }
 
 

@@ -4,6 +4,8 @@ import { usuarioPostRouter } from "./routes/POST/users";
 import { postsRouterPost } from "./routes/POST/post";
 import { postsRouterPatch } from "./routes/PATCH/post";
 import { userRouterPatch } from "./routes/PATCH/users";
+import { postsRouterDelete } from "./routes/DELETE/post";
+import { userRouterDelete } from "./routes/DELETE/user";
 
 
 const { porta } = config
@@ -18,6 +20,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/register', usuarioPostRouter, postsRouterPost)
 app.use('/api/edit', postsRouterPatch, userRouterPatch)
+app.use('/api/delete', postsRouterDelete, userRouterDelete)
 
 app.listen(porta, () => {
     console.log('Servidor rodando na porta', porta)
