@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { Usuario } from "../../db/models";
 
 export const usuarioPostRouter = Router().post('/users', async (req: Request, res: Response) => {
-    const { user, name } = req.body;
+    const { user, name, password } = req.body;
 
     try {
         const userLow = user.trimStart().toLowerCase()
@@ -16,13 +16,14 @@ export const usuarioPostRouter = Router().post('/users', async (req: Request, re
 
             const registerUser = new Usuario({
                 user: userLow,
-                name,
-                date,
-                followers,
-                following,
-                numberFollowers,
-                numberFollowing,
-                posts
+                name: name,
+                password: password,
+                date: date,
+                followers: followers,
+                following: following,
+                numberFollowers: numberFollowers,
+                numberFollowing: numberFollowing,
+                posts: posts
             })
 
             const saveUser = await registerUser.save()

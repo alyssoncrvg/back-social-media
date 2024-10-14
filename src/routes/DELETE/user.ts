@@ -20,6 +20,5 @@ export const userRouterDelete = Router().delete('/user/:id', async (req: Request
         res.status(500).json({
             mensage: error
         })
-
     }
 })

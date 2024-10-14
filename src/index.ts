@@ -6,6 +6,7 @@ import { postsRouterPatch } from "./routes/PATCH/post";
 import { userRouterPatch } from "./routes/PATCH/users";
 import { postsRouterDelete } from "./routes/DELETE/post";
 import { userRouterDelete } from "./routes/DELETE/user";
+import { loginRouterPost } from "./routes/POST/login";
 
 
 const { porta } = config
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
     res.status(200).send('Hello World')
 })
 
+app.use('/api', loginRouterPost)
 app.use('/api/register', usuarioPostRouter, postsRouterPost)
 app.use('/api/edit', postsRouterPatch, userRouterPatch)
 app.use('/api/delete', postsRouterDelete, userRouterDelete)
