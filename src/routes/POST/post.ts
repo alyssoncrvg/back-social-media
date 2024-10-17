@@ -1,8 +1,9 @@
 import { Response, Request, Router } from "express";
 import { Posts, Usuario } from "../../db/models";
 import { AuthenticatedRequest } from "../../../interfaces/authenticated";
+import { authenticateToken } from "../../middlewares/authenticateToken";
 
-export const postsRouterPost = Router().post('/post' ,async (req: AuthenticatedRequest, res: Response) => {
+export const postsRouterPost = Router().post('/post', authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     const { mensage } = req.body;
     const user = req.user?.id; // Pegue o usuário autenticado
     try {

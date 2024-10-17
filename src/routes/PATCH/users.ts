@@ -1,8 +1,9 @@
 import { Router, Request, Response } from "express";
 import { Usuario } from "../../db/models";
 import { AuthenticatedRequest } from "../../../interfaces/authenticated";
+import { authenticateToken } from "../../middlewares/authenticateToken";
 
-export const userRouterPatch = Router().patch('/user/:userName', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const userRouterPatch = Router().patch('/user/:userName', authenticateToken, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     console.log(req.user)
     const id = req.user?.id;
     const { user, name } = req.body;

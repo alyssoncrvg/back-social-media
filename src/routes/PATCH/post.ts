@@ -1,7 +1,8 @@
 import { Router, Request, Response } from "express";
 import { Posts } from "../../db/models";
+import { authenticateToken } from "../../middlewares/authenticateToken";
 
-export const postsRouterPatch = Router().patch('/post/:id', async (req: Request, res: Response) => {
+export const postsRouterPatch = Router().patch('/post/:id', authenticateToken,  async (req: Request, res: Response) => {
     const { id } = req.params
     const { mensage } = req.body
 
