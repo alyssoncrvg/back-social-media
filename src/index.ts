@@ -11,6 +11,7 @@ import { isLogin } from "./middlewares/isLogin";
 import { AuthenticatedRequest } from "../interfaces/authenticated";
 import { authenticateToken } from "./middlewares/authenticateToken";
 import { userGetRouter } from "./routes/GET/users/users";
+import { postsRouterGet } from "./routes/GET/posts/posts";
 
 
 const { porta } = config
@@ -28,7 +29,7 @@ app.use('/api', loginRouterPost)
 app.use('/api/register', usuarioPostRouter, postsRouterPost)
 app.use('/api/edit', postsRouterPatch, userRouterPatch)
 app.use('/api/delete', postsRouterDelete, userRouterDelete)
-app.use('/api/get', userGetRouter)
+app.use('/api/get', userGetRouter, postsRouterGet)
 
 app.listen(porta, () => {
     console.log('Servidor rodando na porta', porta)
