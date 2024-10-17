@@ -2,7 +2,6 @@ import { Router, Request, Response } from "express";
 import { Posts } from "../../db/models";
 
 export const postsRouterDelete = Router().delete('/post/:id', async (req: Request, res: Response) => {
-
     const { id } = req.params;
 
     try {
@@ -22,5 +21,4 @@ export const postsRouterDelete = Router().delete('/post/:id', async (req: Reques
             mensage: error
         })
     }
-
 })

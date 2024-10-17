@@ -1,11 +1,11 @@
 import { Router, Request, Response } from "express";
 import { Usuario } from "../../db/models";
+import { AuthenticatedRequest } from "../../../interfaces/authenticated";
 
-export const userRouterDelete = Router().delete('/user/:id', async (req: Request, res: Response) => {
-    const { id } = req.params;
+export const userRouterDelete = Router().delete('/user/:userName', async (req: AuthenticatedRequest, res: Response) => {
+    const id = req.user.id;
 
     try {
-
         const userDelete = await Usuario.findByIdAndDelete(id)
 
         if(userDelete)
