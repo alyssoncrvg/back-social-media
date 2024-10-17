@@ -7,6 +7,8 @@ import { userRouterPatch } from "./routes/PATCH/users";
 import { postsRouterDelete } from "./routes/DELETE/post";
 import { userRouterDelete } from "./routes/DELETE/user";
 import { loginRouterPost } from "./routes/POST/login";
+import { isLogin } from "./middlewares/isLogin";
+import { AuthenticatedRequest } from "../interfaces/authenticated";
 
 
 const { porta } = config
@@ -15,8 +17,8 @@ const app: Application = express()
 
 app.use(express.json())
 
-app.get('/', (req, res) => {
-    res.status(200).send('Hello World')
+app.get('/', isLogin, (req: AuthenticatedRequest, res) => {
+    res.status(200).send(`Hello ${req.user?.user}`)
 })
 
 app.use('/api', loginRouterPost)

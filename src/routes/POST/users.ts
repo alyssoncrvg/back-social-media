@@ -1,8 +1,11 @@
 import { Router, Request, Response } from "express";
 import { Usuario } from "../../db/models";
+import jwt from 'jsonwebtoken';
+import config from "../../../config";
 
 export const usuarioPostRouter = Router().post('/users', async (req: Request, res: Response) => {
     const { user, name, password } = req.body;
+    const { jwt_secret } = config
 
     try {
         const userLow = user.trimStart().toLowerCase()
@@ -28,7 +31,9 @@ export const usuarioPostRouter = Router().post('/users', async (req: Request, re
 
             const saveUser = await registerUser.save()
 
-            res.status(201).json(saveUser)
+            const token = jwt.sign({ id: saveUser._id, user: saveUser.user }, jwt_secret, { expiresIn: '7d' });
+
+            res.status(201).json({ token, user: saveUser })
         } else {
             res.status(400).json({
                 mensage: 'Nome de usuário incompatível'
