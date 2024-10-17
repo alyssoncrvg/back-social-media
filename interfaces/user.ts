@@ -10,6 +10,7 @@ export interface IUser extends mongoose.Document {
     numberFollowers: number;
     numberFollowing: number;
     posts: mongoose.Types.ObjectId[];
+    refreshToken?: string;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

@@ -4,15 +4,13 @@ import config from '../../config';
 import { AuthenticatedRequest } from '../../interfaces/authenticated';
 
 export const isLogin = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const {Authorization} = req.body
+    const authHeader = req.header('Authorization');
 
-    if (Authorization) {
-        const token = Authorization.replace('Bearer ', '');
-
+    if (authHeader) {
+        const token = authHeader.replace('Bearer ', '');
         if (token) {
             try {
                 const decoded = jwt.verify(token, config.jwt_secret); 
-                console.log(decoded)
                 req.user = decoded;
                 next();
             } catch (error) {

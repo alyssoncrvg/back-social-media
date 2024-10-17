@@ -21,7 +21,7 @@ export const usuarioPostRouter = Router().post('/users', async (req: Request, re
                 user: userLow,
                 name: name,
                 password: password,
-                date: date,
+                register: date,
                 followers: followers,
                 following: following,
                 numberFollowers: numberFollowers,

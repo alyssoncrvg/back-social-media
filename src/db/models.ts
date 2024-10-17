@@ -1,7 +1,8 @@
 import mongoose, { Schema, Document } from "mongoose";
 import config from "../../config";
-import bcrypt from 'bcrypt';
 import { IUser } from "../../interfaces/user";
+import { hashPassword } from "../middlewares/hashPassword";
+import { comparePassword } from "../middlewares/comparePassword";
 
 const { mongo_uri } = config
 
@@ -26,7 +27,7 @@ const usuarioSchema = new Schema({
   following: [{ type: Schema.Types.ObjectId, ref: 'Usuario' }],
   numberFollowers: { type: Number, require: true },
   numberFollowing: { type: Number, require: true },
-  posts: [{ type: Schema.Types.ObjectId, ref: 'Posts' }]
+  posts: [{ type: Schema.Types.ObjectId, ref: 'Posts' }],
 })
 
 const postsSchema = new Schema({
@@ -36,24 +37,9 @@ const postsSchema = new Schema({
   likes: { type: Number, require: true }
 })
 
-// Middleware para criptografar a senha antes de salvar
-usuarioSchema.pre<IUser>('save', async function (next) { 
-  const user = this; 
-    if (!user.isModified('password')) return next();
+usuarioSchema.pre<IUser>('save', hashPassword);
 
-    try {
-        const salt = await bcrypt.genSalt(10); // 10 é o número de rounds
-        user.password = await bcrypt.hash(user.password, salt);
-        next();
-    } catch (error) {
-        return next(error as Error);
-    }
-});
-
-// Método para verificar se a senha fornecida corresponde à senha armazenada
-usuarioSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
+usuarioSchema.methods.comparePassword = comparePassword;
 
 export const Usuario = mongoose.model('Usuarios', usuarioSchema)
 export const Posts = mongoose.model('Posts', postsSchema)
