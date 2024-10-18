@@ -11,6 +11,7 @@ export interface IUser extends mongoose.Document {
     numberFollowing: number;
     posts: mongoose.Types.ObjectId[];
     refreshToken?: string;
+    isVerify: boolean,
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

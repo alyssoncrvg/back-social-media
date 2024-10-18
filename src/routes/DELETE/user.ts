@@ -2,8 +2,9 @@ import { Router, Request, Response } from "express";
 import { Usuario } from "../../db/models";
 import { AuthenticatedRequest } from "../../../interfaces/authenticated";
 import { authenticateToken } from "../../middlewares/authenticateToken";
+import { isVerify } from "../../middlewares/isVerify";
 
-export const userRouterDelete = Router().delete('/user/:userName', authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+export const userRouterDelete = Router().delete('/user/:userName', isVerify, authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     const id = req.user.id;
 
     try {

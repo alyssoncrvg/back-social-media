@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import config from "../../config";
 import { IUser } from "../../interfaces/user";
 import { hashPassword } from "../middlewares/hashPassword";
@@ -16,18 +16,20 @@ const connectDB = async () => {
   }
 };
 
-connectDB()
+connectDB();
 
 const usuarioSchema = new Schema({
   user: { type: String, unique: true, require: true },
   name: { type: String, require: true },
   password: { type: String, require: true },
+  email: { type: String, require: true },
   register: { type: Date, require: true },
   followers: [{ type: Schema.Types.ObjectId, ref: 'Usuario' }],
   following: [{ type: Schema.Types.ObjectId, ref: 'Usuario' }],
   numberFollowers: { type: Number, require: true },
   numberFollowing: { type: Number, require: true },
   posts: [{ type: Schema.Types.ObjectId, ref: 'Posts' }],
+  isVerify: { type: Boolean, require:true }
 })
 
 const postsSchema = new Schema({

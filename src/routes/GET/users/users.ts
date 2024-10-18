@@ -2,8 +2,9 @@ import { Router, Response } from "express";
 import { Usuario } from "../../../db/models";
 import { AuthenticatedRequest } from "../../../../interfaces/authenticated";
 import { authenticateToken } from "../../../middlewares/authenticateToken";
+import { isVerify } from "../../../middlewares/isVerify";
 
-export const userGetRouter = Router().get('/users/:name', authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+export const userGetRouter = Router().get('/users/:name', authenticateToken, isVerify, async (req: AuthenticatedRequest, res: Response) => {
     const { name } = req.params;
 
     try {

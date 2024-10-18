@@ -2,8 +2,9 @@ import { Router, Response } from "express";
 import { AuthenticatedRequest } from "../../../../interfaces/authenticated";
 import { Posts } from "../../../db/models";
 import { authenticateToken } from "../../../middlewares/authenticateToken";
+import { isVerify } from "../../../middlewares/isVerify";
 
-export const postsRouterGet = Router().get('/posts/:context', authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+export const postsRouterGet = Router().get('/posts/:context',authenticateToken, isVerify,  async (req: AuthenticatedRequest, res: Response) => {
 
     const { context } = req.params;
 

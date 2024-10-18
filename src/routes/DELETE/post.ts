@@ -2,8 +2,9 @@ import { Router, Response } from "express";
 import { Posts } from "../../db/models";
 import { authenticateToken } from "../../middlewares/authenticateToken";
 import { AuthenticatedRequest } from "../../../interfaces/authenticated";
+import { isVerify } from "../../middlewares/isVerify";
 
-export const postsRouterDelete = Router().delete('/post/:id', authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+export const postsRouterDelete = Router().delete('/post/:id', isVerify, authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     const { id } = req.params;
 
     try {

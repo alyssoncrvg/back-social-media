@@ -2,10 +2,11 @@ import { Router, Request, Response } from "express";
 import { Usuario } from "../../db/models";
 import jwt from 'jsonwebtoken';
 import config from "../../../config";
+import { sendEmail } from "../../middlewares/sendEmailVerify";
 
 export const usuarioPostRouter = Router().post('/users', async (req: Request, res: Response) => {
-    const { user, name, password } = req.body;
-    const { jwt_secret, refresh_secret } = config
+    const { user, name, password, email } = req.body;
+    const { jwt_secret, refresh_secret, servidor } = config
 
     try {
         const userLow = user.trimStart().toLowerCase()
@@ -21,21 +22,30 @@ export const usuarioPostRouter = Router().post('/users', async (req: Request, re
                 user: userLow,
                 name: name,
                 password: password,
+                email: email,
                 register: date,
                 followers: followers,
                 following: following,
                 numberFollowers: numberFollowers,
                 numberFollowing: numberFollowing,
-                posts: posts
+                posts: posts,
+                isVerify: false,
             })
 
             const saveUser = await registerUser.save()
 
-            const acessToken = jwt.sign({ id: saveUser._id, user: saveUser.user }, jwt_secret, { expiresIn: '15m' });
+            const verificationToken = jwt.sign({ id: saveUser._id }, jwt_secret, { expiresIn: '1d' });
 
-            const refreshToken = jwt.sign({ id: saveUser._id, user: saveUser.user }, refresh_secret, { expiresIn: '7d' });
+            const verificationLink = `${servidor}/api/verify/${verificationToken}`;
+            const subject = 'Verifique sua conta';
+            const text = `Olá ${name}, clique no link para verificar sua conta: ${verificationLink}`;
+    
+            await sendEmail(email, subject, text);
 
-            res.status(201).json({ acessToken: acessToken, refreshToken: refreshToken , user: saveUser })
+            const accessToken = jwt.sign({ id: saveUser._id, user: saveUser.user }, jwt_secret, { expiresIn: '15m' });
+            const newRefreshToken = jwt.sign({ id: saveUser._id, user: saveUser.user }, refresh_secret, { expiresIn: '7d' });
+    
+            res.status(201).json({ message: 'Usuário criado. Verifique seu email para ativar sua conta.', accessToken: accessToken, refreshToken: newRefreshToken });
         } else {
             res.status(400).json({
                 mensage: 'Nome de usuário incompatível'
