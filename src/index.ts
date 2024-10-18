@@ -12,6 +12,7 @@ import { AuthenticatedRequest } from "../interfaces/authenticated";
 import { authenticateToken } from "./middlewares/authenticateToken";
 import { userGetRouter } from "./routes/GET/users/users";
 import { postsRouterGet } from "./routes/GET/posts/posts";
+import { refreshTokenRouterPost } from "./routes/POST/refreshTpken";
 
 
 const { porta } = config
@@ -25,7 +26,7 @@ app.get('/', isLogin, (req: AuthenticatedRequest, res) => {
     res.status(200).send(`Hello ${req.user?.user}`)
 })
 
-app.use('/api', loginRouterPost)
+app.use('/api', loginRouterPost, refreshTokenRouterPost)
 app.use('/api/register', usuarioPostRouter, postsRouterPost)
 app.use('/api/edit', postsRouterPatch, userRouterPatch)
 app.use('/api/delete', postsRouterDelete, userRouterDelete)

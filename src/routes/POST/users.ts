@@ -5,7 +5,7 @@ import config from "../../../config";
 
 export const usuarioPostRouter = Router().post('/users', async (req: Request, res: Response) => {
     const { user, name, password } = req.body;
-    const { jwt_secret } = config
+    const { jwt_secret, refresh_secret } = config
 
     try {
         const userLow = user.trimStart().toLowerCase()
@@ -31,9 +31,11 @@ export const usuarioPostRouter = Router().post('/users', async (req: Request, re
 
             const saveUser = await registerUser.save()
 
-            const token = jwt.sign({ id: saveUser._id, user: saveUser.user }, jwt_secret, { expiresIn: '7d' });
+            const acessToken = jwt.sign({ id: saveUser._id, user: saveUser.user }, jwt_secret, { expiresIn: '15m' });
 
-            res.status(201).json({ token, user: saveUser })
+            const refreshToken = jwt.sign({ id: saveUser._id, user: saveUser.user }, refresh_secret, { expiresIn: '7d' });
+
+            res.status(201).json({ acessToken: acessToken, refreshToken: refreshToken , user: saveUser })
         } else {
             res.status(400).json({
                 mensage: 'Nome de usuário incompatível'

@@ -6,7 +6,7 @@ import config from '../../../config';
 
 export const loginRouterPost = Router().post('/login', async (req: Request, res: Response) => {
     const { user, password } = req.body;
-    const { jwt_secret } = config
+    const { jwt_secret, refresh_secret } = config
 
     try {
         const foundUser: IUser | null = await Usuario.findOne({ user });
@@ -14,9 +14,11 @@ export const loginRouterPost = Router().post('/login', async (req: Request, res:
         if (foundUser) {
             const isMatch = await foundUser.comparePassword(password);
             if (isMatch) {
-                const token = jwt.sign({ id: foundUser._id, user: foundUser.user }, jwt_secret, { expiresIn: '7d' });
+                const acessToken = jwt.sign({ id: foundUser._id, user: foundUser.user }, jwt_secret, { expiresIn: '15m' });
 
-                res.status(200).json({ token, user: foundUser });
+                const refreshToken = jwt.sign({ id: foundUser._id, user: foundUser.user }, refresh_secret, { expiresIn: '7d' });
+
+                res.status(200).json({ acessToken: acessToken, refreshToken: refreshToken, user: foundUser });
             } else {
                 res.status(401).json({ message: 'Senha incorreta' });
             }

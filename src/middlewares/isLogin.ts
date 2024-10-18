@@ -10,7 +10,7 @@ export const isLogin = (req: AuthenticatedRequest, res: Response, next: NextFunc
         const token = authHeader.replace('Bearer ', '');
         if (token) {
             try {
-                const decoded = jwt.verify(token, config.jwt_secret); 
+                const decoded = jwt.verify(token, config.jwt_secret);
                 req.user = decoded;
                 next();
             } catch (error) {
@@ -19,11 +19,7 @@ export const isLogin = (req: AuthenticatedRequest, res: Response, next: NextFunc
         } else {
             res.status(401).json({ message: 'Acesso negado. Token ausente ou malformado.' });
         }
-
-
     } else {
         res.status(401).json({ message: 'Acesso negado. Nenhum token fornecido.' });
-
     }
-
 };
