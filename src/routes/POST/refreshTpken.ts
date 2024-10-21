@@ -12,7 +12,7 @@ export const refreshTokenRouterPost = Router().post('/refreshToken', async (req:
             const decoded = jwt.verify(refreshToken, refresh_secret);
 
             if (decoded && typeof decoded !== 'string') {
-                const accessToken = jwt.sign({ id: decoded.id, user: decoded.user }, jwt_secret, { expiresIn: '15m' });
+                const accessToken = jwt.sign({ id: decoded.id, user: decoded.user }, jwt_secret, { expiresIn: '30d' });
                 const newRefreshToken = jwt.sign({ id: decoded.id, user: decoded.user }, refresh_secret, { expiresIn: '7d' });
 
                 res.status(201).json({ accessToken, refreshToken: newRefreshToken });

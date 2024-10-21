@@ -9,11 +9,11 @@ import { userRouterDelete } from "./routes/DELETE/user";
 import { loginRouterPost } from "./routes/POST/login";
 import { isLogin } from "./middlewares/isLogin";
 import { AuthenticatedRequest } from "../interfaces/authenticated";
-import { authenticateToken } from "./middlewares/authenticateToken";
-import { userGetRouter } from "./routes/GET/users/users";
-import { postsRouterGet } from "./routes/GET/posts/posts";
+import { userGetRouter } from "./routes/GET/users/searchUsers";
+import { searchPostsRouterGet } from "./routes/GET/posts/searchPosts";
 import { refreshTokenRouterPost } from "./routes/POST/refreshTpken";
 import { verifyRouterGet } from "./routes/GET/account/verifyAccount";
+import { postsRouterGet } from "./routes/GET/posts/posts";
 
 
 const { porta } = config
@@ -31,7 +31,7 @@ app.use('/api', loginRouterPost, refreshTokenRouterPost, verifyRouterGet)
 app.use('/api/register', usuarioPostRouter, postsRouterPost)
 app.use('/api/edit', postsRouterPatch, userRouterPatch)
 app.use('/api/delete', postsRouterDelete, userRouterDelete)
-app.use('/api/get', userGetRouter, postsRouterGet)
+app.use('/api', userGetRouter, searchPostsRouterGet, postsRouterGet)
 
 app.listen(porta, () => {
     console.log('Servidor rodando na porta', porta)
