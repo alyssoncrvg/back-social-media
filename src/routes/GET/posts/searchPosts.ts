@@ -4,15 +4,21 @@ import { Posts } from "../../../db/models";
 import { authenticateToken } from "../../../middlewares/authenticateToken";
 import { isVerify } from "../../../middlewares/isVerify";
 
-export const searchPostsRouterGet = Router().get('/search/posts/:context',authenticateToken, isVerify,  async (req: AuthenticatedRequest, res: Response) => {
+export const searchPostsRouterGet = Router().get('/search/posts/:context', authenticateToken, isVerify, async (req: AuthenticatedRequest, res: Response) => {
 
     const { context } = req.params;
 
     try {
 
-        const posts = await Posts.find({ mensage: { $regex: context, $options: 'i' } })
+        const posts = await Posts.find({
+            mensage: {
+                $regex: context,
+                $options: 'i'
+            }
+        })
+            .populate('user', 'user name profileImage')
 
-        if(posts) {
+        if (posts) {
             res.status(201).json(posts)
         } else {
             res.status(404).json({ mensage: 'Nenhum post enocntrado' })

@@ -1,12 +1,14 @@
 import { Router, Request, Response } from "express";
 import { Usuario } from "../../db/models";
+import { v2 as cloudinary } from 'cloudinary';
 import jwt from 'jsonwebtoken';
 import config from "../../../config";
 import { sendEmail } from "../../middlewares/sendEmailVerify";
+import { upload } from "../../../config";
 
-export const usuarioPostRouter = Router().post('/users', async (req: Request, res: Response) => {
+export const usuarioPostRouter = Router().post('/users', upload.single('profileImage'), async (req: Request, res: Response) => {
     const { user, name, password, email } = req.body;
-    const { jwt_secret, refresh_secret, servidor } = config
+    const { jwt_secret, refresh_secret, servidor, jwt_secret_verify } = config
 
     try {
         const userLow = user.trimStart().toLowerCase()
@@ -30,21 +32,36 @@ export const usuarioPostRouter = Router().post('/users', async (req: Request, re
                 numberFollowing: numberFollowing,
                 posts: posts,
                 isVerify: false,
+                profileImage: '',
             })
 
             const saveUser = await registerUser.save()
 
-            const verificationToken = jwt.sign({ id: saveUser._id }, jwt_secret, { expiresIn: '1d' });
+            let profileImageUrl = '';
+            if (req.file) {
+                const result = await cloudinary.uploader.upload(req.file.path, {
+                    folder: 'users',
+                    public_id: saveUser._id.toString(),
+                    format: 'png',
+                });
+                profileImageUrl = result.secure_url;
+            } else {
+                profileImageUrl = "https://res.cloudinary.com/dk9kvqte3/image/upload/v1729608967/users/default.png"
+            }
+
+            await Usuario.findByIdAndUpdate(saveUser._id, { profileImage: profileImageUrl });
+
+            const verificationToken = jwt.sign({ id: saveUser._id }, jwt_secret_verify, { expiresIn: '1d' });
 
             const verificationLink = `${servidor}/api/verify/${verificationToken}`;
             const subject = 'Verifique sua conta';
             const text = `Olá ${name}, clique no link para verificar sua conta: ${verificationLink}`;
-    
+
             await sendEmail(email, subject, text);
 
-            const accessToken = jwt.sign({ id: saveUser._id, user: saveUser.user }, jwt_secret, { expiresIn: '15m' });
-            const newRefreshToken = jwt.sign({ id: saveUser._id, user: saveUser.user }, refresh_secret, { expiresIn: '7d' });
-    
+            const accessToken = jwt.sign({ id: saveUser._id, user: saveUser.user, name: saveUser.name, profileUrl: saveUser.profileImage }, jwt_secret, { expiresIn: '15m' });
+            const newRefreshToken = jwt.sign({ id: saveUser._id, user: saveUser.user, name: saveUser.name, profileUrl: saveUser.profileImage }, refresh_secret, { expiresIn: '7d' });
+
             res.status(201).json({ message: 'Usuário criado. Verifique seu email para ativar sua conta.', accessToken: accessToken, refreshToken: newRefreshToken });
         } else {
             res.status(400).json({

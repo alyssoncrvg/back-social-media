@@ -29,7 +29,8 @@ const usuarioSchema = new Schema({
   numberFollowers: { type: Number, require: true },
   numberFollowing: { type: Number, require: true },
   posts: [{ type: Schema.Types.ObjectId, ref: 'Posts' }],
-  isVerify: { type: Boolean, require:true }
+  isVerify: { type: Boolean, require: true },
+  profileImage: { type: String },
 })
 
 const postsSchema = new Schema({

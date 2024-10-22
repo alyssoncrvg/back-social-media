@@ -3,13 +3,13 @@ import { Usuario } from "../../db/models";
 import { AuthenticatedRequest } from "../../../interfaces/authenticated";
 import { authenticateToken } from "../../middlewares/authenticateToken";
 import { isVerify } from "../../middlewares/isVerify";
+import { upload } from "../../../config";
 
-export const userRouterPatch = Router().patch('/user/:userName', authenticateToken, isVerify, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const userRouterPatch = Router().patch('/user/:userName', authenticateToken, isVerify, upload.single('profileImage'), async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     console.log(req.user)
     const id = req.user?.id;
     const { user, name, email } = req.body;
 
-    console.log(id)
     try {
         const userLow = user.trimStart().toLowerCase()
         if (/.+/.test(userLow)) {

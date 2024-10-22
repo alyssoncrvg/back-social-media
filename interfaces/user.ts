@@ -12,6 +12,7 @@ export interface IUser extends mongoose.Document {
     posts: mongoose.Types.ObjectId[];
     refreshToken?: string;
     isVerify: boolean,
+    profileImage?: string,
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

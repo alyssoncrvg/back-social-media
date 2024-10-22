@@ -23,7 +23,7 @@ export const postsRouterGet = Router().get('/posts', authenticateToken, isVerify
             })
                 .sort({ date: -1 })
                 .limit(postLimit)
-                .populate('user', 'user name')
+                .populate('user', 'user name profileImage')
 
             if (posts.length > 0) {
                 res.status(201).json({ posts })

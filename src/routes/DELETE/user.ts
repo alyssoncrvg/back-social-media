@@ -9,27 +9,27 @@ export const userRouterDelete = Router().delete('/user/:userName', authenticateT
 
     try {
 
-        await Posts.deleteMany({ user: id });
-
-        const updatedFollowers = await Usuario.updateMany(
-            { followers: id },
-            {
-                $pull: { followers: id }, 
-                $inc: { numberFollowers: -1 }
-            }
-        );
-
-        const updatedFollowing = await Usuario.updateMany(
-            { following: id },
-            {
-                $pull: { following: id },
-                $inc: { numberFollowing: -1 }
-            }
-        );
-
         const userDelete = await Usuario.findByIdAndDelete(id);
-
         if (userDelete) {
+
+            await Posts.deleteMany({ user: id });
+
+            const updatedFollowers = await Usuario.updateMany(
+                { followers: id },
+                {
+                    $pull: { followers: id },
+                    $inc: { numberFollowers: -1 }
+                }
+            );
+
+            const updatedFollowing = await Usuario.updateMany(
+                { following: id },
+                {
+                    $pull: { following: id },
+                    $inc: { numberFollowing: -1 }
+                }
+            );
+
             res.status(201).json({
                 message: 'Usuário deletado com sucesso',
                 user: userDelete

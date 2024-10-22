@@ -7,11 +7,11 @@ import config from "../../../../config";
 export const verifyRouterGet = Router().get('/verify/:token', async (req: AuthenticatedRequest, res: Response) => {
 
     const { token } = req.params;
-    const { jwt_secret, refresh_secret } = config;
+    const { jwt_secret_verify } = config;
 
     try {
 
-        const decoded = jwt.verify(token, jwt_secret)
+        const decoded = jwt.verify(token, jwt_secret_verify)
 
         if (decoded && typeof decoded !== 'string') {
             const user = await Usuario.findById(decoded.id)
